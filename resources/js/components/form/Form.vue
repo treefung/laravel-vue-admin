@@ -143,6 +143,23 @@
               </el-button>
 
               <el-button
+                  v-if="attrs.actions.submitButton"
+                  :style="attrs.actions.submitButton.style"
+                  :class="attrs.actions.submitButton.className"
+                  type="info"
+                  :size="attrs.actions.submitButton.size"
+                  :plain="attrs.actions.submitButton.plain"
+                  :round="attrs.actions.submitButton.round"
+                  :circle="attrs.actions.submitButton.circle"
+                  :disabled="attrs.actions.submitButton.disabled"
+                  :icon="attrs.actions.submitButton.icon"
+                  :autofocus="attrs.actions.submitButton.autofocus"
+                  :loading="loading"
+                  @click="submitForm(attrs.ref || 'form', false)"
+              ><template v-if="attrs.actions.submitButton.content">仅保存</template>
+              </el-button>
+
+              <el-button
                 v-if="attrs.actions.submitButton"
                 :style="attrs.actions.submitButton.style"
                 :class="attrs.actions.submitButton.className"
@@ -155,7 +172,7 @@
                 :icon="attrs.actions.submitButton.icon"
                 :autofocus="attrs.actions.submitButton.autofocus"
                 :loading="loading"
-                @click="submitForm(attrs.ref || 'form')"
+                @click="submitForm(attrs.ref || 'form', true)"
                 ><template v-if="attrs.actions.submitButton.content">{{
                   attrs.actions.submitButton.content
                 }}</template>
@@ -246,7 +263,7 @@ export default {
           this.loading = false;
         });
     },
-    submitForm(formName) {
+    submitForm(formName, back) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           this.loading = true;
@@ -260,7 +277,9 @@ export default {
                     this.closeDialog();
                     this.$bus.emit("tableReload");
                   } else {
-                    this.successRefData();
+                    // 保存和保存并返回
+                    back ?  this.successRefData() : 'this.$router.go(0)'
+
                   }
                 }
               })
