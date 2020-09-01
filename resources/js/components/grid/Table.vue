@@ -131,6 +131,7 @@
       </div>
       <div>
         <el-table
+          v-fit-columns
           :ref="attrs.ref || 'table'"
           :data="tableData"
           :row-key="attrs.attributes.rowKey"
@@ -248,6 +249,14 @@ import Actions from "./Actions/Index";
 import BatchActions from "./BatchActions/Index";
 import ItemDiaplsy from "../form/ItemDiaplsy";
 import DialogForm from "./DialogForm";
+
+import Vue from 'vue';
+import Plugin from 'v-fit-columns';
+Vue.use(Plugin);
+
+import JsonViewer from 'vue-json-viewer'
+Vue.use(JsonViewer)
+
 export default {
   mixins: [BaseComponent],
   components: {
@@ -499,6 +508,9 @@ export default {
 </script>
 
 <style lang="scss">
+.el-table__body-wrapper {
+  overflow: auto;
+}
 .grid-container {
   .bottom-border {
     border-bottom: 1px solid #ebeef5;
