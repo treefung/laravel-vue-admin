@@ -75,7 +75,10 @@ export default {
     onDelete(index) {
       if (this._.isArray(this.value)) {
         let t_value = this._.clone(this.value);
-        t_value[index][this.attrs.remove_flag_name] = 1;
+
+        // t_value[index][this.attrs.remove_flag_name] = 1; 多图上传 标注 _remove_ 无效 且 remove 只能标注在  object 当前是 array
+        t_value.splice(index, 1); // 直接从数据剔除删除数据
+
         this.onChange(t_value);
       } else {
         this.onChange(null);
