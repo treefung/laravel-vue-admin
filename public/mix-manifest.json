@@ -1,5 +1,9 @@
 {
+<<<<<<< HEAD
     "/app.js": "/app.js?id=4d53b2d88911458afd6e",
+=======
+    "/app.js": "/app.js?id=e65338425eb667f6b50f",
+>>>>>>> upstream/master
     "/manifest.js": "/manifest.js?id=8991394a854ee5cdffc3",
     "/vendor.js": "/vendor.js?id=df0be4950fcb717193ba"
 }
