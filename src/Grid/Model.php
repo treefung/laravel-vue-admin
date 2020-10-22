@@ -177,7 +177,7 @@ class Model
             return $query['method'] == 'paginate';
         });
 
-        if ($this->grid->isHidePage()) {
+        if (!$this->usePaginate) {
             $query = [
                 'method' => 'get',
                 'arguments' => [],
@@ -400,8 +400,10 @@ class Model
         $columns = $this->grid->getColumns();
         $items = collect();
 
+
         foreach ($data as $key => $row) {
             $item = [];
+
             foreach ($this->grid->getAppendFields() as $field) {
                 data_set($item, $field, data_get($row, $field));
             }
@@ -474,10 +476,7 @@ class Model
             $this->model = $this->relation->getQuery();
         }
 
-
         $this->setSort();
-
-
         $this->setPaginate();
 
 
@@ -485,14 +484,11 @@ class Model
             $this->model = call_user_func_array([$this->model, $query['method']], $query['arguments']);
         });
 
+
         $data = $this->model;
 
         if ($this->model instanceof Collection) {
-            if ($data->count() > 0) {
-                return $this->displayData($data);
-            } else {
-                return $data;
-            }
+            return $this->displayData($data);
         }
 
         if ($this->model instanceof LengthAwarePaginator) {

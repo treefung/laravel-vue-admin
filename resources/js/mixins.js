@@ -21,6 +21,7 @@ const FormItemComponent = {
         value: {
             default: null
         },
+        formItems: Array,
         formItem: Object,
         //当前表单数据
         formData: Object,

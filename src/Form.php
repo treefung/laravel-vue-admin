@@ -14,12 +14,10 @@ use SmallRuralDog\Admin\Components\Form\Upload;
 use SmallRuralDog\Admin\Form\FormActions;
 use SmallRuralDog\Admin\Form\FormAttrs;
 use SmallRuralDog\Admin\Form\FormItem;
-use SmallRuralDog\Admin\Form\FormTab;
 use SmallRuralDog\Admin\Form\HasHooks;
 use SmallRuralDog\Admin\Form\HasRef;
 use SmallRuralDog\Admin\Form\TraitFormAttrs;
 use SmallRuralDog\Admin\Layout\Content;
-use SmallRuralDog\Admin\Layout\Row;
 use Str;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -42,10 +40,8 @@ class Form extends Component
     protected $formRules = [];
     protected $formItemRows = [];
     protected $formItems = [];
-    protected $formItemLayout = [];
-    protected $ignoreEmptyProps = [];
-    protected $tabPosition = "top";
 
+    protected $tabs = [];
 
     const MODE_EDIT = 'edit';
     const MODE_CREATE = 'create';
@@ -107,7 +103,7 @@ class Form extends Component
     }
 
     /**
-     * 快捷生成字段
+     * 生成字段
      * @param $prop
      * @param string $label
      * @param string $field
@@ -115,74 +111,12 @@ class Form extends Component
      */
     public function item($prop, $label = '', $field = '')
     {
-        $item = $this->addItem($prop, $label, $field);
-        $this->row(function (Row $row) use ($item) {
-            $row->item($item);
-        });
-        return $item;
-    }
-
-    /**
-     * 多列布局字段
-     * @param $prop
-     * @param string $label
-     * @param string $field
-     * @return FormItem
-     */
-    public function rowItem($prop, $label = '', $field = '')
-    {
         return $this->addItem($prop, $label, $field);
     }
 
-
-    /**
-     * 表单自定义布局
-     * @param \Closure $closure
-     * @return $this
-     */
-    public function row(\Closure $closure)
+    public function row()
     {
 
-        $row = new Row();
-        call_user_func($closure, $row, $this);
-
-        $this->tab("default", function (FormTab $formTab) use ($row) {
-            $formTab->row($row);
-        });
-
-        return $this;
-    }
-
-    /**
-     * 自定义tab布局
-     * @param $tabName
-     * @param \Closure $closure
-     * @return $this
-     */
-    public function tab($tabName, \Closure $closure)
-    {
-
-        $tab = collect($this->formItemLayout)->filter(function (FormTab $formTab) use ($tabName) {
-            return $formTab->getName() == $tabName;
-        })->first();
-        if (empty($tab)) {
-            $tab = new FormTab($tabName, $this);
-            call_user_func($closure, $tab, $this);
-            $this->formItemLayout[] = $tab;
-        } else {
-            call_user_func($closure, $tab, $this);
-        }
-        return $this;
-    }
-
-    /**
-     * tab位置
-     * @param $tabPosition
-     * @return $this
-     */
-    public function tabPosition($tabPosition)
-    {
-        $this->tabPosition = $tabPosition;
         return $this;
     }
 
@@ -206,11 +140,9 @@ class Form extends Component
     protected function items($items = [])
     {
 
-        $this->ignoreEmptyProps = collect($items)->filter(function (FormItem $item) {
-            return $item->isIgnoreEmpty();
-        })->map(function (FormItem $item) {
-            return $item->getProp();
-        })->flatten()->all();
+        $this->tabs = collect($items)->map(function (FormItem $item) {
+            return $item->getTab();
+        })->unique()->all();
 
         // 根据所处模式抛弃组件
         $this->formItemsAttr = collect($items)->filter(function (FormItem $item) {
@@ -325,7 +257,6 @@ class Form extends Component
 
     public function resource($slice = -2): string
     {
-
         $segments = explode('/', trim(admin_api_url(request()->path()), '/'));
 
         if ($slice !== 0) {
@@ -868,17 +799,16 @@ class Form extends Component
             'dataUrl' => $this->dataUrl,
             'mode' => $this->getMode(),
             'attrs' => $this->attrs,
-            'ignoreEmptyProps' => $this->ignoreEmptyProps,
-            'formItemLayout' => $this->formItemLayout,
-            'tabPosition' => $this->tabPosition,
-            'defaultValues' => (object)$this->formItemsValue,
-            'formRules' => (object)$this->formRules,
+            'formItems' => $this->formItemsAttr,
+            'tabs' => $this->tabs,
+            'defaultValues' => $this->formItemsValue,
+            'formRules' => $this->formRules,
             'ref' => $this->ref,
             'refData' => $this->refData,
             'formRefData' => $this->FormRefDataBuild(),
             'top' => $this->top,
             'bottom' => $this->bottom,
-            'actions' => $this->actions->builderActions()
+            'actions'=>$this->actions->builderActions()
         ];
 
     }

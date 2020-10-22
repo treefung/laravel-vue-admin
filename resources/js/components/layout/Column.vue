@@ -13,7 +13,7 @@
       :key="index"
       :is="content.componentName"
       :attrs="content"
-      v-bind="$attrs"
+      v-bind="$props"
     />
   </el-col>
 </template>

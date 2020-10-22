@@ -2,24 +2,24 @@
   <div class="display-column">
     <template v-if="_.isArray(value)">
       <template v-for="(item, key) in value">
-        <Column :value="item" :column-attr="columnAttr" :key="key" :row="row" :column-value="value" />
+        <Value :value="item" :column-attr="columnAttr" :key="key" :row="row" :column-value="value" />
       </template>
     </template>
     <template v-else>
-      <Column :value="value" :column-attr="columnAttr" :row="row" :column-value="value" />
+      <Value :value="value" :column-attr="columnAttr" :row="row" :column-value="value" />
     </template>
   </div>
 </template>
 <script>
 import { getArrayValue } from "@/utils";
-import Column from "./Column";
+import Value from "./Column";
 export default {
   props: {
     scope: Object,
     columns: Array
   },
   components: {
-    Column
+    Value
   },
   data() {
     return {};

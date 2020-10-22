@@ -104,7 +104,7 @@
   </el-form>
 </template>
 <script>
-import ItemDiaplsy from "./ItemDisplay";
+import ItemDiaplsy from "./ItemDiaplsy";
 import ItemIf from "./ItemIf";
 export default {
   components: {

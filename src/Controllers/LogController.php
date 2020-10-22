@@ -29,7 +29,6 @@ class LogController extends AdminController
             ->stripe()
             ->emptyText("暂无日志")
             ->height('auto')
-            //->hidePage()
             ->appendFields(["user.id"]);
 
 

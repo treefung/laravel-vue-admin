@@ -17,7 +17,6 @@
       v-if="attrs.slot"
       :is="attrs.slot.componentName"
       :attrs="attrs.slot"
-      v-bind="$attrs"
     />
   </el-tooltip>
 </template>
