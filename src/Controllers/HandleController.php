@@ -6,6 +6,7 @@ namespace SmallRuralDog\Admin\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Str;
 
 class HandleController extends Controller
 {
@@ -46,7 +47,10 @@ class HandleController extends Controller
             $path = $request->input('path', 'images');
             $uniqueName = $request->input('uniqueName', config('admin.upload.uniqueName', false));
             $disk = config('admin.upload.disk');
-            $name = $file->getClientOriginalName();
+            // $name = $file->getClientOriginalName(); // 注释默认名称
+            $ext = $file->getClientOriginalExtension();
+            $name = time() . '_' . Str::random(10).'.'.$ext; // 修改为规范名
+
             if ($uniqueName == "true" || $uniqueName == true) {
                 $path = $file->store($path, $disk);
             } else {
